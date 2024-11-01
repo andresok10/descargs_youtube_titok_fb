@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
-import subprocess
-import os
+import subprocess, os
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 output_path = "C:/Dev/PYTHON/APPS------ANDRES/descargas_youtube/"
