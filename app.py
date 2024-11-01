@@ -1,7 +1,5 @@
 from flask import Flask, request, redirect, url_for, flash, send_from_directory, jsonify
-import subprocess
-import os
-import uuid
+import subprocess, os, uuid
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
