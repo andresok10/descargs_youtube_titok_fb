@@ -30,7 +30,7 @@ def index():
                 flash("Error al descargar el archivo.", "error")
         else:
             flash("Por favor ingresa una URL válida.", "error")
-    return render_template("index3.html")
+    return render_template("index5.html")
 
 # Ruta para la descarga de archivos
 @app.route("/download/<filename>")
