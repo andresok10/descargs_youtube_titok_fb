@@ -16,13 +16,11 @@ def index():
 def download():
     url = request.form['url']
     format_type = request.form.get('format', 'video')
-
     # Configuración de yt-dlp
     ydl_opts = {
         'format': 'best',
         'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s')
     }
-
     # Descargar el video
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         result = ydl.extract_info(url, download=True)
@@ -36,10 +34,8 @@ def download():
         clip = AudioFileClip(video_file)
         clip.write_audiofile(audio_file)
         clip.close()
-
         # Opcionalmente, puedes eliminar el archivo de video si no lo necesitas
         os.remove(video_file)
-
     return f'Download completed! <a href="/downloads/{video_title}.mp3">Download audio</a>'
 
 @app.route('/downloads/<filename>')
