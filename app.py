@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_from_directory
 import os
 import yt_dlp
 from moviepy.editor import AudioFileClip
+os.system("pip install --upgrade pip")
 app = Flask(__name__)
 # Carpeta donde se guardarán las descargas
 DOWNLOAD_FOLDER = os.path.join(os.getcwd(), 'static', 'downloads')
