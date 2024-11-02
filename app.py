@@ -1,47 +1,49 @@
-from flask import Flask, request, render_template, jsonify, send_file
+from flask import Flask, render_template, request, send_from_directory
 import os
-import subprocess
-
+import yt_dlp
+from moviepy.editor import AudioFileClip
 app = Flask(__name__)
+# Carpeta donde se guardarán las descargas
+DOWNLOAD_FOLDER = os.path.join(os.getcwd(), 'static', 'downloads')
+os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-# Directorio temporal para guardar los archivos descargados
-TEMP_DOWNLOAD_DIR = "C:/Dev/PYTHON/APPS------ANDRES/descargas_youtube/"
-os.makedirs(TEMP_DOWNLOAD_DIR, exist_ok=True)
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route("/", methods=["GET", "POST"])
-def home():
-    if request.method == "POST":
-        url = request.form.get("url")
-        download_type = request.form.get("download_type")
-        
-        if not url:
-            return jsonify({"error": "URL no proporcionada"}), 400
+@app.route('/download', methods=['POST'])
+def download():
+    url = request.form['url']
+    format_type = request.form.get('format', 'video')
 
-        # Determinar el formato de descarga
-        extension = 'mp3' if download_type == 'audio' else 'mp4'
-        base_name = 'audio' if download_type == 'audio' else 'video'
-        output_file = os.path.join(TEMP_DOWNLOAD_DIR, f"{base_name}.{extension}")
+    # Configuración de yt-dlp
+    ydl_opts = {
+        'format': 'best',
+        'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s')
+    }
 
-        # Ejecutar el comando de descarga
-        format_flag = "bestaudio" if download_type == 'audio' else "best"
-        command = f'yt-dlp -f {format_flag} "{url}" -o "{output_file}" --quiet'
-        
-        process = subprocess.run(command, shell=True, capture_output=True, text=True)
-        
-        if process.returncode != 0:
-            return jsonify({"error": "Error al descargar el video: " + process.stderr}), 500
+    # Descargar el video
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        result = ydl.extract_info(url, download=True)
+        video_title = result['title']
 
-        # Devolver la URL del archivo descargado
-        return jsonify({"download_url": f"/download/{os.path.basename(output_file)}"}), 200
-    
-    return render_template("index.html")
+    if format_type == 'audio':
+        video_file = os.path.join(DOWNLOAD_FOLDER, f"{video_title}.mp4")
+        audio_file = os.path.join(DOWNLOAD_FOLDER, f"{video_title}.mp3")
 
-@app.route('/download/<filename>', methods=['GET'])
-def serve_file(filename):
-    try:
-        return send_file(os.path.join(TEMP_DOWNLOAD_DIR, filename), as_attachment=True)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 404
+        # Convertir el video a audio usando moviepy
+        clip = AudioFileClip(video_file)
+        clip.write_audiofile(audio_file)
+        clip.close()
+
+        # Opcionalmente, puedes eliminar el archivo de video si no lo necesitas
+        os.remove(video_file)
+
+    return f'Download completed! <a href="/downloads/{video_title}.mp3">Download audio</a>'
+
+@app.route('/downloads/<filename>')
+def download_file(filename):
+    return send_from_directory(DOWNLOAD_FOLDER, filename, as_attachment=True)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)

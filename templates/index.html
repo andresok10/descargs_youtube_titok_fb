@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descarga de Videos</title>
+    <title>Descargador de Videos</title>
 </head>
 <body>
-    <h1>Descargar Video</h1>
-    <form action="/" method="POST">
-        <label for="url">URL del video:</label>
+    <h1>Descargar Video o Audio</h1>
+    <form action="/download" method="POST">
+        <label for="url">URL del Video:</label>
         <input type="text" id="url" name="url" required>
-        
-        <label for="download_type">Tipo de descarga:</label>
-        <select id="download_type" name="download_type" required>
+        <br>
+        <label for="format">Formato:</label>
+        <select id="format" name="format">
             <option value="video">Video</option>
             <option value="audio">Audio</option>
         </select>
-        
+        <br>
         <button type="submit">Descargar</button>
     </form>
 </body>
