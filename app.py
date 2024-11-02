@@ -20,7 +20,7 @@ def download():
     ydl_opts = {
         'format': 'best',
         'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
-        'cookiefile': 'ruta/a/cookies.txt'  # Reemplaza con la ruta de tu archivo de cookies
+        #'cookiefile': 'ruta/a/cookies.txt'  # Reemplaza con la ruta de tu archivo de cookies
     }
 
     try:
