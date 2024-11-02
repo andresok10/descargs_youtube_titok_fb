@@ -19,8 +19,8 @@ def download():
     # Configuración de yt-dlp con archivo de cookies
     ydl_opts = {
         'format': 'best',
-        'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
-        #'cookiefile': 'ruta/a/cookies.txt'  # Reemplaza con la ruta de tu archivo de cookies
+        'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'), # C:\Dev\PYTHON\APPS------ANDRES\app1\cookies.txt
+        'cookiefile': 'C:/Dev/PYTHON/APPS------ANDRES/app1/cookies.txt'  # Reemplaza con la ruta de tu archivo de cookies
     }
 
     try:
