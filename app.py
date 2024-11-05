@@ -7,6 +7,8 @@ app = Flask(__name__)
 DOWNLOAD_FOLDER = os.path.join(os.getcwd(), 'static', 'downloads')
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
+COOKIE_FILE = os.path.join(app.root_path, 'config', 'cookies.txt')  # Archivo cookies dentro del proyecto
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -21,7 +23,8 @@ def download():
         'format': 'best',
         'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'), # C:\Dev\PYTHON\APPS------ANDRES\app1\cookies.txt
         #'cookiefile': 'C:/Dev/PYTHON/APPS------ANDRES/app1/cookies.txt'  # Reemplaza con la ruta de tu archivo de cookies
-        'cookiefile': 'C:\\Dev\\PYTHON\\APPS------ANDRES\\app1\\cookies.txt'
+        # 'C:\\Dev\\PYTHON\\APPS------ANDRES\\app1\\cookies.txt'
+        'cookiefile': COOKIE_FILE
 
     }
 
