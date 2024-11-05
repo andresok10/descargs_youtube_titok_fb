@@ -2,12 +2,24 @@ import yt_dlp
 from flask import Flask, render_template, request, send_from_directory
 import os
 from moviepy.editor import AudioFileClip
-os.system("pip install --upgrade pip")
-app = Flask(__name__)
-DOWNLOAD_FOLDER = os.path.join(os.getcwd(), 'static', 'downloads')
-os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-#COOKIE_FILE = os.path.join(app.root_path, 'config', 'cookies.txt')  # Archivo cookies dentro del proyecto
+app = Flask(__name__)
+
+# Ruta para el archivo de cookies y carpeta de descargas
+CONFIG_FOLDER = os.path.join(app.root_path, 'config')
+DOWNLOAD_FOLDER = os.path.join(app.root_path, 'static', 'downloads')
+
+# Crea la carpeta de descargas y la carpeta config si no existen
+os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
+os.makedirs(CONFIG_FOLDER, exist_ok=True)
+
+# Ruta completa para el archivo cookies.txt
+COOKIE_FILE = os.path.join(CONFIG_FOLDER, 'cookies.txt')
+
+# Verifica si el archivo cookies.txt existe y, si no, lo crea vacío
+if not os.path.isfile(COOKIE_FILE):
+    with open(COOKIE_FILE, 'w') as f:
+        f.write("# Añade tus cookies aquí\n")  # Puedes dejarlo vacío o añadir texto de guía
 
 @app.route('/')
 def index():
@@ -21,11 +33,8 @@ def download():
     # Configuración de yt-dlp con archivo de cookies
     ydl_opts = {
         'format': 'best',
-        'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'), # C:\Dev\PYTHON\APPS------ANDRES\app1\cookies.txt
-        #'cookiefile': 'C:/Dev/PYTHON/APPS------ANDRES/app1/cookies.txt'  # Reemplaza con la ruta de tu archivo de cookies
-        # 'C:\\Dev\\PYTHON\\APPS------ANDRES\\app1\\cookies.txt'
-        'cookiefile': '/opt/render/project/src/config/cookies.txt'
-
+        'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
+        'cookiefile': COOKIE_FILE  # Usa la ruta completa del archivo de cookies
     }
 
     try:
